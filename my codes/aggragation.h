@@ -243,13 +243,19 @@ void Aggragation(matrix A, double eps){
 	//yeah~! power iteration to compute largest eigenvalue
 	matrix b(A.col,1);
 	b.array[0][0]=1;
-	
-	for (int i=0;i<100;i++){  
+	matrix bdif(b);
+	k = 0;
+//	for (int i=0;i<100;i++){  
+	while (bdif.norm() > 0.000001){
+		bdif = b;
 		b = AF*b;
 		b = b*(1/b.norm());
 //		b.transpose().print();
+		k++;
+		bdif = b - bdif;
 	} 
 
+	printf("\nPower iteration converged after %d iterations \n",k);
 	matrix prod1(b.transpose()*A*b);
 	matrix prod2(b.transpose()*b);
 

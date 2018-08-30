@@ -14,10 +14,6 @@ class matrix {
 		matrix(matrix*); //constructor to copy a matrix
 		void setElement(int r, int c, float e);
 		float getElement (int r, int c);		
-		/*void setColumn (int c, float a[]);
-		float* getColumn (int c);
-		void setRow (int r, float a[]);
-		float* getRow (int r); */
 		matrix operator+(const matrix&);
 		matrix operator-(const matrix&);
 		matrix operator*(const matrix&);
