@@ -1,0 +1,44 @@
+diff --git a/solvers/elliptic/setups/setupTri2D.rc b/solvers/elliptic/setups/setupTri2D.rc
+index 293f19f..5d7b831 100644
+--- a/solvers/elliptic/setups/setupTri2D.rc
++++ b/solvers/elliptic/setups/setupTri2D.rc
+@@ -19,7 +19,7 @@ data/ellipticHomogeneous2D.h
+ 3
+ 
+ [POLYNOMIAL DEGREE]
+-6
++8
+ 
+ [THREAD MODEL]
+ CUDA
+@@ -39,7 +39,8 @@ PCG+FLEXIBLE
+ 
+ # can be IPDG, or CONTINUOUS
+ [DISCRETIZATION]
+-CONTINUOUS
++#CONTINUOUS
++IPDG
+ 
+ # can be NODAL or BERN
+ [BASIS]
+diff --git a/solvers/elliptic/src/ellipticBuildMultigridLevel.c b/solvers/elliptic/src/ellipticBuildMultigridLevel.c
+index 5cbce25..8ce0755 100644
+--- a/solvers/elliptic/src/ellipticBuildMultigridLevel.c
++++ b/solvers/elliptic/src/ellipticBuildMultigridLevel.c
+@@ -714,7 +714,15 @@ elliptic_t *ellipticBuildMultigridLevel(elliptic_t *baseElliptic, int Nc, int Nf
+   elliptic->ogs = ogsSetup(Ntotal, mesh->maskedGlobalIds, mesh->comm, verbose, mesh->device);
+   elliptic->o_invDegree = elliptic->ogs->o_invDegree;
+   
+-
++  //tau
++  if (elliptic->elementType==TRIANGLES ||
++      elliptic->elementType==QUADRILATERALS){
++    elliptic->tau = 2.0*(mesh->N+1)*(mesh->N+2)/2.0;
++    if(elliptic->dim==3)
++      elliptic->tau *= 1.5;
++  }
++  else
++    elliptic->tau = 2.0*(mesh->N+1)*(mesh->N+3);
+ 
+   // info for kernel construction
+   occa::properties kernelInfo;
